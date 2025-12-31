@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JST EDUP3163 - Profesionalisme Keguruan (Final V13 - Signature Alignment Fix)</title>
+    <style>
+        /* Tetapan Asas untuk Cetakan A4 Landscape */
+        @page {
+            size: A4 landscape;
+            margin: 0; 
+        }
+        
+        * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        body {
+            font-family: Arial, sans-serif; 
+            font-size: 11pt;
+            line-height: 1.3;
+            margin: 0;
+            padding: 20px; 
+            background-color: #555; 
+        }
+
+        /* Bekas Halaman Fizikal */
+        .page-container {
+            background-color: white;
+            width: 297mm; 
+            height: 209mm; 
+            padding: 1.5cm 2cm; 
+            margin: 0 auto 20px auto; 
+            position: relative; 
+            overflow: hidden; 
+            page-break-after: always; 
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .page-container:last-child {
+            page-break-after: auto;
+        }
+
+        /* Gaya Lampiran */
+        .lampiran-label {
+            position: absolute;
+            top: 1cm;
+            right: 1.5cm;
+            font-weight: bold;
+            font-size: 11pt;
+        }
+
+        /* Gaya Footer Nombor Muka Surat */
+        .page-footer {
+            position: absolute;
+            bottom: 5mm; 
+            left: 0;
+            width: 100%;
+            text-align: center;
+        }
+
+        .footer-line {
+            border-top: 1px solid #000;
+            width: 50px;
+            margin: 0 auto 5px auto;
+        }
+
+        .page-number {
+            font-size: 10pt;
+        }
+
+        /* Gaya Header */
+        .header-table {
+            width: 100%;
+            border: none;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+        
+        .header-table td {
+            vertical-align: middle; 
+            padding: 0;
+        }
+
+        .logo-cell {
+            width: 140px; 
+            padding-right: 15px;
+            text-align: left;
+            vertical-align: top !important; 
+        }
+
+        .text-cell {
+            text-align: left;
+            vertical-align: middle; 
+        }
+
+        .logo-img {
+            height: 105px; 
+            width: auto;
+            display: block;
+        }
+
+        /* Header Text Styles */
+        .header-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 105px; 
+        }
+
+        .header-title {
+            text-transform: uppercase;
+            font-weight: bold;
+            margin: 0;
+            line-height: 1.2;
+            text-align: left;
+        }
+        
+        .title-main { font-size: 16pt; }
+        .title-sub { font-size: 14pt; }
+        .title-detail { font-size: 12pt; font-weight: normal; }
+
+        /* Gaya Jadual Utama */
+        table.main-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+            font-size: 11pt;
+            flex-shrink: 0;
+        }
+
+        table.main-table th, table.main-table td {
+            border: 1px solid black;
+            padding: 6px;
+            vertical-align: top;
+        }
+
+        table.main-table th {
+            background-color: #FFE4E1 !important; 
+            color: black;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        /* Jadual Tanpa Garisan (Maklumat Kursus) */
+        table.no-border {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px; 
+            font-size: 11pt;
+            flex-shrink: 0;
+        }
+        table.no-border td {
+            border: none;
+            padding: 4px 5px;
+            vertical-align: top; 
+        }
+
+        /* Ruang Tandatangan - PENAMBAHBAIKAN KESELARASAN */
+        .signature-section {
+            margin-top: auto; 
+            margin-bottom: 25px; 
+            width: 100%;
+        }
+
+        .signature-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed; /* Penting untuk lebar sel sekata */
+        }
+        
+        .signature-table td {
+            border: 1px solid black;
+            height: 150px; 
+            width: 33.33%;
+            vertical-align: top;
+            padding: 0;
+            position: relative; /* Untuk positioning absolute content */
+        }
+        
+        /* Header dalam kotak tandatangan */
+        .signature-header {
+            background-color: #FFE4E1 !important;
+            font-weight: bold;
+            text-align: center;
+            border-bottom: 1px solid black;
+            padding: 5px;
+            font-size: 11pt;
+            height: 50px; /* Tinggi TETAP untuk semua header supaya kandungan bawah selari */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.1; 
+        }
+        
+        /* Konten tandatangan */
+        .signature-content {
+            padding: 15px; 
+            height: calc(100% - 50px); /* Baki ruang selepas header */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end; /* Semua elemen tolak ke bawah */
+            gap: 10px; 
+        }
+        
+        .signature-row {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
+        /* Input Fields */
+        input[type="text"], select, input[type="date"], textarea {
+            font-family: Arial, sans-serif; 
+            font-size: inherit;
+            border: none;
+            border-bottom: 1px dotted #999;
+            background: rgba(255, 228, 225, 0.2);
+            width: 95%; 
+            padding: 2px 5px;
+        }
+        
+        select {
+            white-space: normal;
+            height: auto;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        input[type="date"] {
+            font-family: Arial, sans-serif; 
+            width: 150px;
+        }
+
+        /* Elemen Teks */
+        .section-title {
+            font-weight: bold;
+            text-decoration: underline;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            font-size: 12pt;
+        }
+
+        ol { margin: 0; padding-left: 25px; }
+        li { margin-bottom: 8px; text-align: justify; }
+
+        /* Print CSS */
+        @media print {
+            body { background-color: white; margin: 0; padding: 0; }
+            .page-container { margin: 0; box-shadow: none; border: none; min-height: 209mm; height: auto;}
+            
+            input[type="text"], select, input[type="date"], textarea {
+                background: transparent;
+                border: none;
+                width: auto;
+                padding: 0;
+                -webkit-appearance: none;
+                resize: none;
+            }
+            select { text-indent: 0.01px; text-overflow: ''; }
+            
+            input[type="date"]::-webkit-inner-spin-button,
+            input[type="date"]::-webkit-calendar-picker-indicator {
+                display: none;
+                -webkit-appearance: none;
+            }
+        }
+
+        /* Helper Classes */
+        .center-text { text-align: center; }
+        .bold { font-weight: bold; }
+        .editable { cursor: text; }
+        .editable:hover { background-color: #fffaf0; }
+    </style>
+</head>
+<body>
+
+<!-- MUKASURAT 1 -->
+<div class="page-container">
+    <div class="lampiran-label">Lampiran 2</div>
+
+    <!-- Header Table -->
+    <table class="header-table">
+        <tr>
+            <!-- Logo Cell -->
+            <td class="logo-cell">
+                <a href="https://ibb.co/Xr8yXzC6">
+                    <img src="https://i.ibb.co/YFZD2tLJ/images.png" alt="Logo IPGM" border="0" class="logo-img">
+                </a>
+            </td>
+            <!-- Text Cell -->
+            <td class="text-cell">
+                <div class="header-content">
+                    <div class="header-title title-main">INSTITUT PENDIDIKAN GURU KAMPUS DARULAMAN</div>
+                    <div class="header-title title-sub">PENTAKSIRAN BERTERUSAN</div>
+                    <div class="header-title title-detail">(JADUAL SPESIFIKASI TUGASAN, SOALAN TUGASAN & PANDUAN PEMARKAHAN)</div>
+                    <div class="header-title title-detail">TAHUN AKADEMIK: <input type="text" value="2025" style="width: 70px; font-weight: bold; display: inline-block;"></div>
+                </div>
+            </td>
+        </tr>
+    </table>
+    
+    <hr style="border: 1px solid black; margin-bottom: 20px;">
+
+    <!-- Maklumat Kursus -->
+    <table class="no-border">
+        <tr>
+            <td style="width: 15%;"><strong>Program:</strong></td>
+            <td style="width: 35%;">
+                <div contenteditable="true" style="border-bottom: 1px dotted #999; min-height: 2.6em; width: 95%; background: rgba(255, 228, 225, 0.2);">
+                    Program Ijazah Sarjana Muda Perguruan<br>(PISMP)
+                </div>
+            </td>
+            <td style="width: 15%;"><strong>Semester/Tahun:</strong></td>
+            <td style="width: 35%;">
+                <div contenteditable="true" style="border-bottom: 1px dotted #999; min-height: 1.3em; width: 95%; background: rgba(255, 228, 225, 0.2);">
+                    Semester 2 / Tahun 3
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td><strong>Nama Kursus:</strong></td>
+            <!-- Ruang Nama Kursus (2 Baris) -->
+            <td>
+                <div contenteditable="true" style="border-bottom: 1px dotted #999; min-height: 2.6em; width: 95%; background: rgba(255, 228, 225, 0.2);">
+                    Profesionalisme Keguruan dan Kepimpinan Guru
+                </div>
+            </td>
+            <td><strong>Ambilan:</strong></td>
+            <td><input type="text" value="Jun 2023"></td>
+        </tr>
+        <tr>
+            <td><strong>Kod:</strong></td>
+            <td>EDUP3163</td>
+            <td><strong>Kumpulan:</strong></td>
+            <td><input type="text" value="Semua Opsyen"></td>
+        </tr>
+    </table>
+
+    <!-- Jadual Tugasan Ringkas -->
+    <table class="main-table">
+        <thead>
+            <tr>
+                <th style="width: 40%;">Tugasan</th>
+                <th style="width: 20%;">Tarikh Mula</th>
+                <th style="width: 20%;">Tarikh Hantar</th>
+                <th style="width: 20%;">Jam Pembelajaran Pelajar</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="editable" contenteditable="true">1. Penulisan Akademik (30%)</td>
+                <td class="center-text"><input type="text" value="Minggu 3" class="center-text"></td>
+                <td class="center-text"><input type="text" value="Minggu 7" class="center-text"></td>
+                <td class="center-text editable" contenteditable="true">11 Jam</td>
+            </tr>
+            <tr>
+                <td class="editable" contenteditable="true">2. Penghasilan Produk (30%)</td>
+                <td class="center-text"><input type="text" value="Minggu 6" class="center-text"></td>
+                <td class="center-text"><input type="text" value="Minggu 12" class="center-text"></td>
+                <td class="center-text editable" contenteditable="true">9 Jam</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Ruang Tandatangan (Selari & Kemas) -->
+    <div class="signature-section">
+        <table class="signature-table">
+            <tr>
+                <td>
+                    <div class="signature-header">Disediakan oleh Pensyarah/<br>Penyelaras Kursus</div>
+                    <div class="signature-content">
+                        <div class="signature-row">
+                            <strong>Nama:</strong> <input type="text" style="width:70%">
+                        </div>
+                        <div class="signature-row">
+                            <strong>Tandatangan:</strong> ___________________
+                        </div>
+                        <div class="signature-row">
+                            <strong>Tarikh:</strong> <input type="date">
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="signature-header">Disahkan oleh Ketua Jabatan</div>
+                    <div class="signature-content">
+                        <div class="signature-row">
+                            <strong>Nama:</strong> <input type="text" style="width:70%">
+                        </div>
+                        <div class="signature-row">
+                            <strong>Tandatangan:</strong> ___________________
+                        </div>
+                        <div class="signature-row">
+                            <strong>Tarikh:</strong> <input type="date">
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="signature-header">Verifikasi oleh Pemeriksa Dalam (PD)</div>
+                    <div class="signature-content">
+                        <div class="signature-row">
+                            <strong>Nama:</strong> <input type="text" style="width:70%">
+                        </div>
+                        <div class="signature-row">
+                            <strong>Tandatangan:</strong> ___________________
+                        </div>
+                        <div class="signature-row">
+                            <strong>Tarikh:</strong> <input type="date">
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Footer Page Number -->
+    <div class="page-footer">
+        <div class="footer-line"></div>
+        <div class="page-number">1</div>
+    </div>
+</div>
+
+<!-- MUKASURAT 2 -->
+<div class="page-container">
+    <!-- HPK Section -->
+    <div class="section-title">Hasil Pembelajaran Kursus (HPK):</div>
+    <ol>
+        <li class="editable" contenteditable="true">Menganalisis isu-isu etika, akauntabiliti dan integriti serta implikasinya terhadap profesionalisme keguruan. (C4, A3, HP2, HP11, KKG2, KEP8)</li>
+        <li class="editable" contenteditable="true">Merangka pembangunan profesional kendiri dan kerjaya berasaskan peringkat perkembangan guru dan standard guru berkualiti. (C6, A4, HP2, HP9, KKG5, KMP1)</li>
+        <li class="editable" contenteditable="true">Menilai peranan dan cabaran kepemimpinan guru bagi menangani perubahan dalam pendidikan serta pembangunan tadbir urus insan dan kewarganegaraan. (C5, HP2, KKG4)</li>
+    </ol>
+
+    <div style="font-style: italic; margin-bottom: 25px;">Pentaksiran Berterusan ini bagi menilai hasil pembelajaran 1 dan 2.</div>
+
+    <!-- Objektif Section -->
+    <div class="section-title">Objektif Pentaksiran Berterusan:</div>
+    <div>Pelajar akan dapat:</div>
+    <ol>
+        <li class="editable" contenteditable="true">Menganalisis secara kritis isu-isu semasa berkaitan etika, akauntabiliti, dan integriti guru dengan merujuk kepada Kod Etika Keguruan dan Peraturan Tatakelakuan Penjawat Awam melalui penulisan akademik. (HPK1, KKG2, KEP8)</li>
+        <li class="editable" contenteditable="true">Menghasilkan pelan pembangunan profesionalisme kendiri (e-Portfolio/Produk Digital) yang kreatif dan inovatif berdasarkan analisis kendiri, peringkat perkembangan guru, dan Standard Guru Malaysia 2.0. (HPK2, KKG5, KMP1)</li>
+    </ol>
+
+    <br>
+    
+    <!-- Footer Page Number -->
+    <div class="page-footer">
+        <div class="footer-line"></div>
+        <div class="page-number">2</div>
+    </div>
+</div>
+
+<!-- MUKASURAT 3: SPESIFIKASI TUGASAN 1 -->
+<div class="page-container">
+    <div class="section-title" style="text-align: center;">SPESIFIKASI TUGASAN</div>
+    
+    <!-- Jadual Tugasan 1 -->
+    <table class="main-table">
+        <thead>
+            <tr>
+                <th style="width: 25%;">TOPIK</th>
+                <th style="width: 35%;">TUGASAN</th>
+                <th style="width: 10%;">WAJARAN</th>
+                <th style="width: 30%;">ASPEK / KRITERIA PENILAIAN</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="editable" contenteditable="true">
+                    <strong>Topik 2:</strong> Akauntabiliti, Etika dan Perundangan Guru<br><br>
+                    <strong>Topik 3:</strong> Integriti dan Rasuah
+                </td>
+                <td>
+                    <div class="editable" contenteditable="true">
+                    <strong>TUGASAN 1: PENULISAN AKADEMIK (1000 Patah Perkataan)</strong>
+                    <br><br>
+                    Pelajar dikehendaki menganalisis satu isu semasa berkaitan pelanggaran etika atau integriti guru. Analisis perlu merangkumi implikasi terhadap profesion dan cadangan langkah pencegahan berdasarkan Kod Etika dan Peraturan Tatatertib.
+                    </div>
+                    <br>
+                    <em>Elemen KPPB (3R - Rigor):</em><br>
+                    <span class="editable" contenteditable="true">Analisis mendalam menggunakan sumber yang sahih dan pemikiran kritis.</span>
+                </td>
+                <td class="center-text"><strong>30%</strong></td>
+                <td class="editable" contenteditable="true">
+                    <strong>1. Penguasaan Kandungan (10%):</strong>
+                    <ul>
+                        <li>Ketepatan fakta etika & undang-undang.</li>
+                        <li>Analisis isu yang mendalam.</li>
+                    </ul>
+                    <br>
+                    <strong>2. Pemikiran Kritis (KKG2) (10%):</strong>
+                    <ul>
+                        <li>Kebolehan menghubungkait punca dan kesan.</li>
+                        <li>Justifikasi hujah yang matang.</li>
+                    </ul>
+                    <br>
+                    <strong>3. Etika & Profesionalisme (KEP8) (5%):</strong>
+                    <ul>
+                        <li>Rujukan yang autentik dan beretika.</li>
+                    </ul>
+                    <br>
+                    <strong>4. Organisasi & Bahasa (5%):</strong>
+                    <ul>
+                        <li>Wacana yang koheren & format APA.</li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Footer Page Number -->
+    <div class="page-footer">
+        <div class="footer-line"></div>
+        <div class="page-number">3</div>
+    </div>
+</div>
+
+<!-- MUKASURAT 4: SPESIFIKASI TUGASAN 2 -->
+<div class="page-container">
+    <div class="section-title" style="text-align: center;">SPESIFIKASI TUGASAN (Sambungan)</div>
+    
+    <!-- Jadual Tugasan 2 -->
+    <table class="main-table">
+        <thead>
+            <tr>
+                <th style="width: 25%;">TOPIK</th>
+                <th style="width: 35%;">TUGASAN</th>
+                <th style="width: 10%;">WAJARAN</th>
+                <th style="width: 30%;">ASPEK / KRITERIA PENILAIAN</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="editable" contenteditable="true">
+                    <strong>Topik 4:</strong> Perkembangan Guru<br><br>
+                    <strong>Topik 5:</strong> Pembangunan Profesionalisme Guru
+                </td>
+                <td>
+                    <div class="editable" contenteditable="true">
+                    <strong>TUGASAN 2: PENGHASILAN PRODUK (Pelan Pembangunan Kendiri Digital)</strong>
+                    <br><br>
+                    Pelajar dikehendaki menghasilkan satu produk digital (e-Profil / Infografik Interaktif) yang memaparkan analisis peringkat perkembangan profesional diri dan merangka pelan pembangunan kerjaya masa depan berpandukan Standard Guru Malaysia (SGM).
+                    </div>
+                    <br>
+                    <em>Elemen KPPB (6C - Kreativiti & Sahsiah):</em><br>
+                    <span class="editable" contenteditable="true">Menghasilkan idea baharu dalam merancang masa depan kerjaya.</span>
+                </td>
+                <td class="center-text"><strong>30%</strong></td>
+                <td class="editable" contenteditable="true">
+                    <strong>1. Aplikasi Pengetahuan (KKG5) (10%):</strong>
+                    <ul>
+                        <li>Aplikasi teori perkembangan guru.</li>
+                        <li>Integrasi SGM dalam perancangan.</li>
+                    </ul>
+                    <br>
+                    <strong>2. Kemahiran Personal (KMP1) (10%):</strong>
+                    <ul>
+                        <li>Kesedaran kendiri & pembelajaran sepanjang hayat.</li>
+                        <li>Kejelasan matlamat kerjaya.</li>
+                    </ul>
+                    <br>
+                    <strong>3. Kreativiti & Inovasi (5%):</strong>
+                    <ul>
+                        <li>Keaslian produk digital.</li>
+                        <li>Reka bentuk yang menarik & efektif.</li>
+                    </ul>
+                    <br>
+                    <strong>4. Kualiti Produk (5%):</strong>
+                    <ul>
+                        <li>Kebolehfungsian & kejelasan maklumat.</li>
+                    </ul>
+                </td>
+            </tr>
+            <!-- Jumlah Besar -->
+            <tr>
+                <td colspan="2" style="text-align: right; padding-right: 20px;"><strong>JUMLAH BESAR</strong></td>
+                <td class="center-text"><strong>60%</strong></td>
+                <td style="background-color: #FFE4E1;"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div style="font-size: 11pt; margin-top: 15px; font-style: italic;">
+        * Peperiksaan Akhir (40%) akan mentaksir HPK3 dan topik-topik berkaitan Kepemimpinan Guru dan Tadbir Urus Insan.
+    </div>
+
+    <!-- Footer Page Number -->
+    <div class="page-footer">
+        <div class="footer-line"></div>
+        <div class="page-number">4</div>
+    </div>
+</div>
+
+</body>
+</html>
